@@ -7,29 +7,33 @@ const KEY = "2f9538ac1388ab59893c0f4dc87a5c6a";
 
 function App() {
   const [city, setCity] = useState("");
-  const [data, setData] = useState();
-  const inputRef = useRef();
+  const [data, setData] = useState(null);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   const fetchData = async () => {
+    setData(null);
     if (city !== "") {
       try {
         const response = await axios.get(
           `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${KEY}`
         );
         setData(response.data);
-        setCity("");
       } catch (err) {
         toast.warn("Please enter valid city name");
       }
+      finally {
+        setCity("");
+        inputRef.current.focus();
+      }
     }
   };
-  useEffect(() => {
-    inputRef.current?.focus();
-  });
-  // const inputClick =() => inputRef.current.focus();
 
   return (
-    <div>
+    <div className="app">
       <ToastContainer
         position="top-right"
         autoClose={3000}
